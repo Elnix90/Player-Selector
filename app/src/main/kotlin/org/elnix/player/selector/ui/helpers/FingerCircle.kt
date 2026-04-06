@@ -11,10 +11,7 @@ import org.elnix.player.selector.data.Constants
 import org.elnix.player.selector.data.TrackedFinger
 import org.elnix.player.selector.ui.helpers.ColorUtils.alphaMultiplier
 
-fun DrawScope.fingerCircle(
-    finger: TrackedFinger,
-    overrideChosenColor: Color?
-) {
+fun DrawScope.fingerCircle(finger: TrackedFinger) {
 
     val center = finger.position
     val progress = finger.progress
@@ -31,7 +28,7 @@ fun DrawScope.fingerCircle(
 //    val hueColor = Color.hsv(hue * 360, 1f, 1f)
 
 //    val color = Color.hsv(progress * 360, 1f, 1f)
-    val color = overrideChosenColor ?: Color.White.alphaMultiplier(0.5f)
+    val color = finger.color ?: Color.White.alphaMultiplier(0.5f)
 
     val radius = Constants.FINGER_RADIUS_DP.toPx()
     val arcRadius = radius + 10.dp.toPx()

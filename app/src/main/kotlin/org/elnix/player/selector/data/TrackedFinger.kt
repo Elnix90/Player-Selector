@@ -2,12 +2,14 @@ package org.elnix.player.selector.data
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 
 data class TrackedFinger(
     var positionState: MutableState<Offset>,
     val pointerId: Int,
     val startTimeMs: Long,
-    var lastUpdateTimeMs: Long = startTimeMs
+    var lastUpdateTimeMs: Long = startTimeMs,
+    var color: Color? = null
 ) {
     var position: Offset
         get() = positionState.value
@@ -16,7 +18,7 @@ data class TrackedFinger(
         }
 
     val durationMs: Long
-        get() = System.currentTimeMillis() - startTimeMs
+        get() = System.currentTimeMillis() - lastUpdateTimeMs
 
 
     val progress: Float
