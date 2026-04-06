@@ -1,4 +1,4 @@
-package org.elnix.player.selector.ui.theme
+package org.elnix.player.selector.ui.helpers
 
 import android.graphics.BlurMaskFilter
 import android.graphics.Paint
@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 
+
+// Functions from Dragon Launcher: https://github.com/Elnix90/Dragon-Launcher
 
 fun DrawScope.glowOverlay(
     center: Offset,

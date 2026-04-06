@@ -1,4 +1,4 @@
-package org.elnix.player.selector
+package org.elnix.player.selector.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
@@ -17,7 +17,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import org.elnix.player.selector.data.TrackedFinger
-import org.elnix.player.selector.ui.theme.glowOverlay
+import org.elnix.player.selector.ui.helpers.glowOverlay
 
 @SuppressLint("LocalContextResourcesRead")
 @Composable
