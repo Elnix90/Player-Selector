@@ -1,7 +1,10 @@
 package org.elnix.player.selector.ui
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,8 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import kotlinx.coroutines.delay
 import org.elnix.player.selector.data.TrackedFinger
 import org.elnix.player.selector.ui.helpers.fingerCircle
@@ -25,9 +31,36 @@ fun App(
     modifier: Modifier
 ) {
 
+    val haptic = LocalHapticFeedback.current
+
     val trackedFingers = remember { mutableStateMapOf<Int, TrackedFinger>() }
     var isPressed by remember { mutableStateOf(false) }
     var recompositionTrigger by remember { mutableIntStateOf(0) }
+
+    val areAllFingersMaxProgress = trackedFingers.values.all {
+        Log.d("AppDebug", "Progress: ${it.progress}")
+        it.progress == 1.0f
+    }
+
+    var isInPauseMode by remember { mutableStateOf(false) }
+
+
+    LaunchedEffect(areAllFingersMaxProgress) {
+        // Need at least 2 fingers to determine colors
+        if (areAllFingersMaxProgress && trackedFingers.size > 1) {
+            haptic.performHapticFeedback(HapticFeedbackType.Reject)
+            isInPauseMode = true
+        }
+    }
+
+    if (isPressed) {
+        LaunchedEffect(Unit) {
+            while (true) {
+                recompositionTrigger++
+                delay(10)
+            }
+        }
+    }
 
 
     Box(
@@ -39,42 +72,53 @@ fun App(
                     while (true) {
                         val event = awaitPointerEvent(PointerEventPass.Initial)
 
-                        event.changes.forEach { change ->
-                            val pointerId = change.id.value.toInt()
-                            val position = change.position
+                        if (!isInPauseMode) {
+                            event.changes.forEach { change ->
+                                val pointerId = change.id.value.toInt()
+                                val position = change.position
 
-                            when {
-                                pointerId in trackedFingers -> {
-                                    // Finger is moving or still pressed
-                                    trackedFingers[pointerId]?.let {
-                                        it.position = position
-                                        it.lastUpdateTimeMs = System.currentTimeMillis()
+                                when {
+                                    pointerId in trackedFingers -> {
+                                        // Finger is moving or still pressed
+                                        trackedFingers[pointerId]?.let {
+                                            it.position = position
+                                            it.lastUpdateTimeMs = System.currentTimeMillis()
+                                        }
+                                    }
+
+                                    change.pressed -> {
+                                        // Finger just pressed down
+                                        if (!trackedFingers.containsKey(pointerId)) {
+                                            val now = System.currentTimeMillis()
+                                            trackedFingers[pointerId] = TrackedFinger(
+                                                pointerId = pointerId,
+                                                positionState = mutableStateOf(position),
+                                                startTimeMs = now
+                                            )
+                                        }
                                     }
                                 }
 
-                                change.pressed -> {
-                                    // Finger just pressed down
-                                    if (!trackedFingers.containsKey(pointerId)) {
-                                        val now = System.currentTimeMillis()
-                                        trackedFingers[pointerId] = TrackedFinger(
-                                            pointerId = pointerId,
-                                            positionState = mutableStateOf(position),
-                                            startTimeMs = now
-                                        )
-                                    }
+                                val stillPressed = event.changes.filter { it.pressed }.map { it.id.value.toInt() }.toSet()
+
+                                val toRemove = trackedFingers.keys.filter { it !in stillPressed }
+
+                                toRemove.forEach { pointerId ->
+                                    trackedFingers.remove(pointerId)
                                 }
+
+                                isPressed = trackedFingers.isNotEmpty()
                             }
-
-                            val stillPressed = event.changes.filter { it.pressed }.map { it.id.value.toInt() }.toSet()
-
-                            val toRemove = trackedFingers.keys.filter { it !in stillPressed }
-
-                            toRemove.forEach { pointerId ->
-                                trackedFingers.remove(pointerId)
-                            }
-
-                            isPressed = trackedFingers.isNotEmpty()
                         }
+                    }
+                }
+            }
+            .pointerInput(areAllFingersMaxProgress) {
+                detectTapGestures {
+                    if (areAllFingersMaxProgress) {
+                        isInPauseMode = false
+                        isPressed = false
+                        trackedFingers.clear()
                     }
                 }
             }
@@ -82,23 +126,26 @@ fun App(
 
 
         if (isPressed) {
-            LaunchedEffect(Unit) {
-                recompositionTrigger++
-                delay(50)
-            }
 
             key(recompositionTrigger) {
                 Canvas(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     trackedFingers.values.forEach { finger ->
-                        fingerCircle(finger)
+                        fingerCircle(
+                            finger = finger,
+                            overrideChosenColor = if (isInPauseMode) Color.Red else null,
+                        )
                     }
                 }
             }
         }
 
-        Text("Displaying ${trackedFingers.size} points:")
+        Column {
+            Text("Displaying ${trackedFingers.size} points:")
+            Text("Are all points finished loading $areAllFingersMaxProgress")
+            Text("Is in pause mode: $isInPauseMode")
+        }
     }
 }
 

@@ -17,4 +17,8 @@ data class TrackedFinger(
 
     val durationMs: Long
         get() = System.currentTimeMillis() - startTimeMs
+
+
+    val progress: Float
+        get() = (this.durationMs.toFloat() / Constants.GLOBAL_HOLD_DURATION_MS).coerceIn(0f..1f)
 }
