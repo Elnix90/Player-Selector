@@ -3,10 +3,16 @@ package org.elnix.player.selector.ui.screens
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,12 +23,14 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import org.elnix.player.selector.data.Constants
 import org.elnix.player.selector.data.PickingMode
@@ -30,9 +38,7 @@ import org.elnix.player.selector.data.TrackedFinger
 import org.elnix.player.selector.ui.helpers.fingerCircle
 
 @Composable
-fun App(
-    modifier: Modifier
-) {
+fun App(onSettings: () -> Unit) {
 
     val haptic = LocalHapticFeedback.current
 
@@ -121,7 +127,8 @@ fun App(
 
 
     Box(
-        modifier = modifier
+        modifier = Modifier
+            .background(Color.Black)
             .fillMaxSize()
             .pointerInput(Unit) {
                 awaitPointerEventScope {
@@ -194,7 +201,14 @@ fun App(
 
 
         AnimatedVisibility(!isPressed) {
-
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Settings",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+                    .clickable { onSettings() }
+            )
         }
 
         Column {

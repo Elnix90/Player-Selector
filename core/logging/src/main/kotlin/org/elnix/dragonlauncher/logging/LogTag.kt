@@ -8,4 +8,5 @@ data class LogTag(
 
 object Logging {
     val BACKUP_TAG = LogTag("SettingsBackupManager")
+    val TAG = LogTag("PlayerSelectorTag")
 }

@@ -17,4 +17,18 @@ object ColorUtils {
      */
     fun Color.alphaMultiplier(multiplier: Float): Color =
         copy(alpha = alpha * multiplier)
+
+    /**
+     * Returns this [Color], reducing its alpha by half when [enabled] is false.
+     *
+     * If [enabled] is true, the color is returned unchanged.
+     * If false, the resulting color keeps the same RGB components and
+     * multiplies the current alpha by `0.5f`.
+     *
+     * @param enabled whether the color should remain fully effective
+     * @return this color, or a version with its alpha halved when disabled
+     */
+    fun Color.semiTransparentIfDisabled(enabled: Boolean): Color =
+        if (enabled) this else alphaMultiplier(0.5f)
+
 }
