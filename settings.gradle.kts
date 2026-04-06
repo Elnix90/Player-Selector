@@ -23,5 +23,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Player Selector"
+
 include(":app")
- 
+include(":core:base")
+include("core:settings")
+include("core:logging")

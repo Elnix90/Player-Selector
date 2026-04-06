@@ -1,6 +1,7 @@
-package org.elnix.player.selector.ui
+package org.elnix.player.selector.ui.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -189,6 +190,11 @@ fun App(
                     }
                 }
             }
+        }
+
+
+        AnimatedVisibility(!isPressed) {
+
         }
 
         Column {
