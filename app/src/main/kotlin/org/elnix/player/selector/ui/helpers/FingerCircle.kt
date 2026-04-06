@@ -31,7 +31,10 @@ fun DrawScope.fingerCircle(finger: TrackedFinger) {
     val color = finger.color ?: Color.White.alphaMultiplier(0.5f)
 
     val radius = Constants.FINGER_RADIUS_DP.toPx()
-    val arcRadius = radius + 10.dp.toPx()
+    val breatheRadius = radius * (1f + 0.1f * kotlin.math.sin(finger.durationMs / 300f))
+
+
+    val arcRadius = breatheRadius + 10.dp.toPx()
 
     val rect = Rect(
         center.x - arcRadius,
@@ -41,6 +44,7 @@ fun DrawScope.fingerCircle(finger: TrackedFinger) {
     )
 
     val rotationAngle = (finger.durationMs / 2f) % 360f
+
 
     drawArc(
         color = color,
@@ -55,6 +59,6 @@ fun DrawScope.fingerCircle(finger: TrackedFinger) {
     drawCircle(
         color = color,
         center = center,
-        radius = radius
+        radius = breatheRadius
     )
 }
