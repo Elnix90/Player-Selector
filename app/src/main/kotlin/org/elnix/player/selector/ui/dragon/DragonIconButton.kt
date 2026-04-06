@@ -1,4 +1,4 @@
-package org.elnix.player.selector.ui.settings
+package org.elnix.player.selector.ui.dragon
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi

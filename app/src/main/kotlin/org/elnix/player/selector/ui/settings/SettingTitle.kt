@@ -24,7 +24,7 @@ fun SettingsTitle(
         modifier = Modifier.fillMaxWidth()
     ) {
 
-        DragonIconButton(
+        _root_ide_package_.org.elnix.player.selector.ui.dragon.DragonIconButton(
             onClick = onBack,
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Back"

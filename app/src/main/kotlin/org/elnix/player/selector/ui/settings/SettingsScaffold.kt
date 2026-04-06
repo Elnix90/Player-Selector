@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.elnix.player.selector.ui.helpers.conditional
+import org.elnix.player.selector.ui.modifiers.conditional
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

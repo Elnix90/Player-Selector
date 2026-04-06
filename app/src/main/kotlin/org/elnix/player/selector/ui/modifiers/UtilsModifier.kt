@@ -1,4 +1,4 @@
-package org.elnix.player.selector.ui.helpers
+package org.elnix.player.selector.ui.modifiers
 
 import androidx.compose.ui.Modifier
 
@@ -43,4 +43,4 @@ fun Modifier.conditional(
     fallback: Modifier.() -> Modifier,
     block: Modifier.() -> Modifier
 ): Modifier =
-    if (condition) this.block() else this.fallback()
+   if (condition) this.block() else this.fallback()

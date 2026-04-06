@@ -8,7 +8,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -23,7 +25,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -32,9 +33,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import org.elnix.dragonlauncher.settings.stores.SettingsStore
 import org.elnix.player.selector.data.Constants
 import org.elnix.player.selector.data.PickingMode
 import org.elnix.player.selector.data.TrackedFinger
+import org.elnix.player.selector.ui.helpers.Spacer
+import org.elnix.player.selector.ui.helpers.asState
 import org.elnix.player.selector.ui.helpers.fingerCircle
 
 @Composable
@@ -56,6 +60,7 @@ fun App(onSettings: () -> Unit) {
     val currentPickingMode: PickingMode = Constants.CURRENT_PICKING_MODE
 
 
+    val debugMode by SettingsStore.debugMode.asState()
 
     LaunchedEffect(areAllFingersMaxProgress) {
         // Need at least 2 fingers to determine colors
@@ -200,21 +205,29 @@ fun App(onSettings: () -> Unit) {
         }
 
 
-        AnimatedVisibility(!isPressed) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "Settings",
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(16.dp)
-                    .clickable { onSettings() }
-            )
+
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Spacer()
+
+            AnimatedVisibility(!isPressed) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Settings",
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .clickable { onSettings() }
+                )
+            }
         }
 
-        Column {
-            Text("Displaying ${trackedFingers.size} points:")
-            Text("Are all points finished loading $areAllFingersMaxProgress")
-            Text("Is in pause mode: $isInPauseMode")
+        AnimatedVisibility(debugMode) {
+            Column {
+                Text("Displaying ${trackedFingers.size} points:")
+                Text("Are all points finished loading $areAllFingersMaxProgress")
+                Text("Is in pause mode: $isInPauseMode")
+            }
         }
     }
 }
