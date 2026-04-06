@@ -1,0 +1,5 @@
+All users put their finger on the screen, and when they are all ready, one of them is picked
+You can switch modes:
+ - Pick only one random player
+ - Create teams
+ - Determine an order
